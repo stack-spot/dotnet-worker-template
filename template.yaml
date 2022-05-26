@@ -17,7 +17,7 @@ inputs:
       - "net5.0"  
       - "net6.0"
 
-computed-global-inputs:
+global-computed-inputs:
   src_base_path: "."
 
 computed-inputs: 
@@ -30,7 +30,7 @@ hooks:
     trigger: after-render
     commands:      
       - dotnet new -i {{computed_inputs.package}} --force
-      - dotnet new {{computed_inputs.version}} -n {{global_inputs.project_name}} -p {{global_inputs.project_name}} -o '{{computed_global_inputs.src_base_path}}' --skipRestore true --force      
+      - dotnet new {{computed_inputs.version}} -n {{global_inputs.project_name}} -p {{global_inputs.project_name}} -o '{{global_computed_inputs.src_base_path}}' --skipRestore true --force      
       - dotnet new tool-manifest
       - dotnet tool install --local dotnet-format
 

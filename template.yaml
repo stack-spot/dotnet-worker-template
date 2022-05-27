@@ -18,7 +18,8 @@ inputs:
       - "net6.0"
 
 global-computed-inputs:
-  src_base_path: "."
+  project_type: "Worker"
+  src_base_path: ""
 
 computed-inputs: 
   version: "{% if global_inputs.framework == 'net6.0' %}{{'stackspot.worker'}}{% else %}{{'stackspot.worker.net5'}}{% endif %}"
@@ -28,11 +29,21 @@ hooks:
 #package / apply template / install dotnet-format
   - type: run
     trigger: after-render
-    commands:      
+    windows:      
       - dotnet new -i {{computed_inputs.package}} --force
-      - dotnet new {{computed_inputs.version}} -n {{global_inputs.project_name}} -p {{global_inputs.project_name}} -o '{{global_computed_inputs.src_base_path}}' --skipRestore true --force      
+      - dotnet new {{computed_inputs.version}} -n {{global_inputs.project_name}} -p {{global_inputs.project_name}} -o '{{target_path | replace('\\','\/')}}' --skipRestore true --force      
       - dotnet new tool-manifest
       - dotnet tool install --local dotnet-format
+    linux:
+      - dotnet new -i {{computed_inputs.package}} --force
+      - dotnet new {{computed_inputs.version}} -n {{global_inputs.project_name}} -p {{global_inputs.project_name}} -o '{{target_path}}' --skipRestore true --force      
+      - dotnet new tool-manifest
+      - dotnet tool install --local dotnet-format
+    mac:
+      - dotnet new -i {{computed_inputs.package}} --force
+      - dotnet new {{computed_inputs.version}} -n {{global_inputs.project_name}} -p {{global_inputs.project_name}} -o '{{target_path}}' --skipRestore true --force      
+      - dotnet new tool-manifest
+      - dotnet tool install --local dotnet-format  
 
 displayName: Worker - Template
 
